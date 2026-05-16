@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import tarfile
 from pathlib import Path
 from typing import Dict, List
 
@@ -20,12 +21,29 @@ class GitHistoryTracker:
         if not self.repo_path.exists() or not self.repo_path.is_dir():
             raise ValueError(f"Repository path does not exist: {repo_path}")
 
+        self._restore_bundled_history_if_needed()
+
         try:
             self.repo = Repo(self.repo_path)
         except InvalidGitRepositoryError as exc:
             raise GitTrackerError(f"Not a git repository: {repo_path}") from exc
 
         self.analyzer = LanguageAnalyzer()
+
+    def _restore_bundled_history_if_needed(self) -> None:
+        """Restore git metadata for bundled sample_repo in fresh clones."""
+        if (self.repo_path / ".git").exists():
+            return
+
+        archive = self.repo_path.parent / "sample_repo_git.tgz"
+        if self.repo_path.name != "sample_repo" or not archive.exists():
+            return
+
+        try:
+            with tarfile.open(archive, mode="r:gz") as tar:
+                tar.extractall(self.repo_path)
+        except (tarfile.TarError, OSError) as exc:
+            raise GitTrackerError(f"Failed to restore bundled sample repo history: {exc}") from exc
 
     def collect_history(self, depth: int = 50) -> List[CommitMetrics]:
         if depth < 1:
