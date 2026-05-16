@@ -1,11 +1,12 @@
 import json
+from pathlib import Path
 
 from click.testing import CliRunner
 
 from metrics_cli.cli import main
 
 
-SAMPLE_REPO = "data/sample_repo"
+SAMPLE_REPO = str(Path(__file__).resolve().parents[1] / "data" / "sample_repo")
 
 
 def test_scan_command_outputs_json():
