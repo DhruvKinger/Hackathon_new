@@ -32,7 +32,16 @@ class GitHistoryTracker:
 
     def _restore_bundled_history_if_needed(self) -> None:
         """Restore git metadata for bundled sample_repo in fresh clones."""
-        if (self.repo_path / ".git").exists():
+        has_git_dir = (self.repo_path / ".git").exists()
+        if has_git_dir:
+            # Older clones may already have restored .git metadata but no checked-out files.
+            if self._has_source_files(self.repo_path):
+                return
+            try:
+                repo = Repo(self.repo_path)
+                repo.git.reset("--hard", "HEAD")
+            except (InvalidGitRepositoryError, GitCommandError) as exc:
+                raise GitTrackerError(f"Failed to materialize sample repo files: {exc}") from exc
             return
 
         archive = self.repo_path.parent / "sample_repo_git.tgz"
@@ -49,6 +58,13 @@ class GitHistoryTracker:
             raise GitTrackerError(f"Failed to restore bundled sample repo history: {exc}") from exc
         except (InvalidGitRepositoryError, GitCommandError) as exc:
             raise GitTrackerError(f"Failed to materialize sample repo files: {exc}") from exc
+
+    @staticmethod
+    def _has_source_files(path: Path) -> bool:
+        for extension in ("*.py", "*.js", "*.ts", "*.java", "*.c", "*.cc", "*.cpp", "*.go", "*.rb"):
+            if any(path.glob(extension)):
+                return True
+        return False
 
     def collect_history(self, depth: int = 50) -> List[CommitMetrics]:
         if depth < 1:
