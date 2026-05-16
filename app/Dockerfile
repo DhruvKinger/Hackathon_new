@@ -9,10 +9,10 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir \
-    click>=8,<9 \
-    GitPython>=3.1,<4 \
-    matplotlib>=3.8,<4 \
-    radon>=6,<7 \
-    pytest>=8,<9
+    "click>=8,<9" \
+    "GitPython>=3.1,<4" \
+    "matplotlib>=3.8,<4" \
+    "radon>=6,<7" \
+    "pytest>=8,<9"
 
 ENV PYTHONUNBUFFERED=1
