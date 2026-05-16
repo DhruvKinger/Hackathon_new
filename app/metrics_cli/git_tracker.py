@@ -42,8 +42,13 @@ class GitHistoryTracker:
         try:
             with tarfile.open(archive, mode="r:gz") as tar:
                 tar.extractall(self.repo_path)
+            # Recreate working-tree files from restored git metadata.
+            repo = Repo(self.repo_path)
+            repo.git.reset("--hard", "HEAD")
         except (tarfile.TarError, OSError) as exc:
             raise GitTrackerError(f"Failed to restore bundled sample repo history: {exc}") from exc
+        except (InvalidGitRepositoryError, GitCommandError) as exc:
+            raise GitTrackerError(f"Failed to materialize sample repo files: {exc}") from exc
 
     def collect_history(self, depth: int = 50) -> List[CommitMetrics]:
         if depth < 1:
