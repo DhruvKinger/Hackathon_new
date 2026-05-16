@@ -1,0 +1,7 @@
+* text=auto
+
+# Ensure shell scripts work on Mac/Linux
+*.sh text eol=lf
+
+# Keep Python files with LF for cross-platform consistency
+*.py text eol=lf
