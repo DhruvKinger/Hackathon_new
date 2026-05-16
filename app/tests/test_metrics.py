@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from metrics_cli.git_tracker import GitHistoryTracker
 from metrics_cli.metrics import LanguageAnalyzer, metrics_to_language_summary
 
 
@@ -24,6 +25,9 @@ def fn(a):\n    if a:\n        return 1\n    return 0\n""",
 def test_language_summary_cc_avg():
     analyzer = LanguageAnalyzer()
     sample_repo = Path(__file__).resolve().parents[1] / "data" / "sample_repo"
+
+    # Ensure bundled sample history/files are materialized on fresh clones.
+    GitHistoryTracker(str(sample_repo))
     language_totals, _ = analyzer.scan_repository(str(sample_repo))
 
     summary = metrics_to_language_summary(language_totals)
