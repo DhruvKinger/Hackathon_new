@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "name": ".submission_gen\\tests\\tests\\test_cli.py::test_chart_creates_png_files",
+      "status": "PASSED"
+    },
+    {
+      "name": ".submission_gen\\tests\\tests\\test_cli.py::test_history_command_has_commits_in_order",
+      "status": "PASSED"
+    },
+    {
+      "name": ".submission_gen\\tests\\tests\\test_cli.py::test_report_csv_headers",
+      "status": "PASSED"
+    },
+    {
+      "name": ".submission_gen\\tests\\tests\\test_cli.py::test_scan_command_outputs_json",
+      "status": "PASSED"
+    },
+    {
+      "name": ".submission_gen\\tests\\tests\\test_metrics.py::test_language_summary_cc_avg",
+      "status": "PASSED"
+    },
+    {
+      "name": ".submission_gen\\tests\\tests\\test_metrics.py::test_python_metrics_counting",
+      "status": "PASSED"
+    }
+  ]
+}
